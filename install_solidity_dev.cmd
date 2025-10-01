@@ -146,7 +146,6 @@ echo Setting PATH for current session...
 set "PATH=%PATH%;%FOUNDRY_BIN%"
 
 echo Foundry !FOUNDRY_VERSION! installed successfully!
-echo Installed tools: anvil.exe, cast.exe, chisel.exe, forge.exe
 echo Installation directory: %FOUNDRY_BIN%
 echo.
 echo Note: You may need to restart your terminal or IDE to use Foundry commands.
