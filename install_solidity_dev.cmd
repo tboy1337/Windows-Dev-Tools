@@ -13,6 +13,11 @@ if %errorlevel% equ 0 (
     exit /b 1
 )
 
+echo ========================================
+echo Modern Solidity Development Tools
+echo ========================================
+echo.
+
 set PYTHON_CMD=
 py --version >nul 2>&1
 if %errorlevel% equ 0 (
@@ -38,37 +43,32 @@ if %errorlevel% neq 0 (
 
 where node >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Node.js is not installed or in PATH.
+    echo ERROR: Node.js is not installed or in PATH.
     timeout /t 10 /nobreak
     exit /b 1
 )
 
 where npm >nul 2>&1
 if %errorlevel% neq 0 (
-    echo npm is not installed or in PATH.
+    echo ERROR: npm is not installed or in PATH.
     timeout /t 10 /nobreak
     exit /b 1
 )
 
-echo Installing/Upgrading Hardhat...
-call npm install -g hardhat
-
+echo [1/6] Installing Foundry (Testing, Local Node, CLI Tools)...
 echo.
 echo Detecting latest Foundry version...
 set FOUNDRY_VERSION=
 for /f "delims=" %%i in ('curl -Ls -o nul -w "%%{url_effective}" https://github.com/foundry-rs/foundry/releases/latest') do set FOUNDRY_LATEST_URL=%%i
 if %errorlevel% neq 0 (
-    echo ERROR: Failed to detect latest Foundry version. Cannot proceed with installation.
-    echo.
+    echo ERROR: Failed to detect latest Foundry version.
     echo Please check your internet connection and try again.
     goto :skip_foundry
 )
 
 for %%a in ("!FOUNDRY_LATEST_URL!") do set FOUNDRY_VERSION=%%~nxa
 if "!FOUNDRY_VERSION!"=="" (
-    echo ERROR: Failed to parse Foundry version from URL: !FOUNDRY_LATEST_URL!
-    echo.
-    echo Cannot proceed with installation.
+    echo ERROR: Failed to parse Foundry version from URL.
     goto :skip_foundry
 )
 
@@ -90,13 +90,12 @@ if exist "%FOUNDRY_BIN%\forge.exe" (
         for /f "tokens=3 delims= " %%v in ('findstr /C:"forge Version:" "!VERSION_TEMP!"') do set CURRENT_VERSION=%%v
         del /F /Q "!VERSION_TEMP!" >nul 2>&1
         if not "!CURRENT_VERSION!"=="" (
-            REM Extract version tag (e.g., v1.3.6 from 1.3.6-v1.3.6)
             for /f "tokens=2 delims=-" %%t in ("!CURRENT_VERSION!") do set CURRENT_VERSION_TAG=%%t
             if "!CURRENT_VERSION_TAG!"=="" set CURRENT_VERSION_TAG=!CURRENT_VERSION!
             echo Current installed version: !CURRENT_VERSION_TAG!
             echo.
             if "!CURRENT_VERSION_TAG!"=="!FOUNDRY_VERSION!" (
-                echo Foundry !FOUNDRY_VERSION! is already installed and up to date.
+                echo Foundry !FOUNDRY_VERSION! is already up to date.
                 goto :skip_foundry
             )
             echo Upgrading from !CURRENT_VERSION_TAG! to !FOUNDRY_VERSION!...
@@ -110,122 +109,86 @@ if exist "%FOUNDRY_BIN%\forge.exe" (
     if exist "%FOUNDRY_BIN%\chisel.exe" del /F /Q "%FOUNDRY_BIN%\chisel.exe" >nul 2>&1
     if exist "%FOUNDRY_BIN%\forge.exe" del /F /Q "%FOUNDRY_BIN%\forge.exe" >nul 2>&1
 ) else (
-    echo No existing installation found.
-    echo.
     echo Installing Foundry !FOUNDRY_VERSION!...
     echo.
 )
 
 echo Downloading Foundry !FOUNDRY_VERSION!...
-echo.
 curl -L -o "%FOUNDRY_TEMP%.zip" "!FOUNDRY_URL!" >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Warning: Failed to download Foundry.  Error code: %errorlevel%
+    echo ERROR: Failed to download Foundry. Error code: %errorlevel%
     goto :skip_foundry
 )
 
 echo Extracting Foundry...
-echo.
 powershell -Command "Expand-Archive -Path '%FOUNDRY_TEMP%.zip' -DestinationPath '%FOUNDRY_TEMP%' -Force" >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Warning: Failed to extract Foundry archive.
+    echo ERROR: Failed to extract Foundry archive.
     goto :cleanup_foundry
 )
 
 echo Installing Foundry executables...
-echo.
 copy /Y "%FOUNDRY_TEMP%\anvil.exe" "%FOUNDRY_BIN%\" >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Warning: Failed to install anvil.exe. Error code: %errorlevel%
+    echo ERROR: Failed to install anvil.exe. Error code: %errorlevel%
     goto :cleanup_foundry
 )
 copy /Y "%FOUNDRY_TEMP%\cast.exe" "%FOUNDRY_BIN%\" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Warning: Failed to install cast.exe. Error code: %errorlevel%
-    goto :cleanup_foundry
-)
 copy /Y "%FOUNDRY_TEMP%\chisel.exe" "%FOUNDRY_BIN%\" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Warning: Failed to install chisel.exe. Error code: %errorlevel%
-    goto :cleanup_foundry
-)
 copy /Y "%FOUNDRY_TEMP%\forge.exe" "%FOUNDRY_BIN%\" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Warning: Failed to install forge.exe. Error code: %errorlevel%
-    goto :cleanup_foundry
-)
 
 echo Verifying installation...
-echo.
 if exist "%FOUNDRY_BIN%\forge.exe" (
     "%FOUNDRY_BIN%\forge.exe" --version
 ) else (
-    echo Warning: forge.exe not found after installation. Error code: %errorlevel%
+    echo ERROR: forge.exe not found after installation.
     goto :cleanup_foundry
 )
 
 echo Adding Foundry to User PATH permanently...
-echo.
-powershell -Command "$path = [Environment]::GetEnvironmentVariable('Path', 'User'); if ($path -notlike '*%FOUNDRY_BIN%*') { [Environment]::SetEnvironmentVariable('Path', $path + ';%FOUNDRY_BIN%', 'User'); Write-Host 'Foundry added to User PATH permanently' } else { Write-Host 'Foundry already in User PATH' }" >nul 2>&1
+powershell -Command "$path = [Environment]::GetEnvironmentVariable('Path', 'User'); if ($path -notlike '*%FOUNDRY_BIN%*') { [Environment]::SetEnvironmentVariable('Path', $path + ';%FOUNDRY_BIN%', 'User'); Write-Host 'Foundry added to PATH' } else { Write-Host 'Foundry already in PATH' }" >nul 2>&1
 
-echo Setting PATH for current session...
-echo.
 set "PATH=%PATH%;%FOUNDRY_BIN%"
 
 echo Foundry !FOUNDRY_VERSION! installed successfully!
-echo.
-echo Installation directory: %FOUNDRY_BIN%
-echo.
-echo Note: You may need to restart your terminal or IDE to use Foundry commands.
 echo.
 
 :cleanup_foundry
 if exist "%FOUNDRY_TEMP%.zip" del /F /Q "%FOUNDRY_TEMP%.zip" >nul 2>&1
 if exist "%FOUNDRY_TEMP%" rmdir /S /Q "%FOUNDRY_TEMP%" >nul 2>&1
 
-echo Installation complete!
-
 :skip_foundry
 
-echo Installing/Upgrading Ganache CLI...
-call npm install -g ganache
+echo [2/6] Installing Hardhat...
+call npm install -g hardhat
+echo.
 
-echo Installing/Upgrading Solidity Compiler...
-call npm install -g solc
+echo [3/6] Installing Aderyn...
+%PYTHON_CMD% -m pip install --upgrade aderyn
+echo.
 
-echo Installing/Upgrading Slither...
-%PYTHON_CMD% -m pip install --upgrade slither-analyzer
+echo [4/6] Installing solc-select...
+%PYTHON_CMD% -m pip install --upgrade solc-select
+echo.
 
-echo Installing/Upgrading Mythril...
-%PYTHON_CMD% -m pip install --upgrade mythril
-
-echo Installing/Upgrading Wake...
-%PYTHON_CMD% -m pip install --upgrade eth-wake
-
-echo Installing/Upgrading OpenZeppelin CLI...
-call npm install -g @openzeppelin/cli
-
-echo Installing/Upgrading Web3.js...
-call npm install -g web3
-
-echo Installing/Upgrading Ethers.js...
-call npm install -g ethers
-
-echo Installing/Upgrading Prettier Solidity Plugin...
+echo [5/6] Installing Code Quality Tools...
 call npm install -g prettier prettier-plugin-solidity
-
-echo Installing/Upgrading Solhint...
 call npm install -g solhint
+echo.
 
-echo Installing/Upgrading Waffle...
-call npm install -g ethereum-waffle
+echo [6/6] Installing Wake...
+%PYTHON_CMD% -m pip install --upgrade eth-wake
+echo.
 
 echo Cleaning npm cache...
 call npm cache clean --force
-
 echo.
-echo All installations complete!
 
-timeout /t 10 /nobreak
+echo ========================================
+echo Installation Complete!
+echo ========================================
+echo.
+
+timeout /t 15 /nobreak
 endlocal
 exit /b 0
