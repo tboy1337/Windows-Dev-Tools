@@ -134,8 +134,20 @@ if %errorlevel% neq 0 (
     goto :cleanup_foundry
 )
 copy /Y "%FOUNDRY_TEMP%\cast.exe" "%FOUNDRY_BIN%\" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to install cast.exe. Error code: %errorlevel%
+    goto :cleanup_foundry
+)
 copy /Y "%FOUNDRY_TEMP%\chisel.exe" "%FOUNDRY_BIN%\" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to install chisel.exe. Error code: %errorlevel%
+    goto :cleanup_foundry
+)
 copy /Y "%FOUNDRY_TEMP%\forge.exe" "%FOUNDRY_BIN%\" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to install forge.exe. Error code: %errorlevel%
+    goto :cleanup_foundry
+)
 
 echo Verifying installation...
 if exist "%FOUNDRY_BIN%\forge.exe" (
