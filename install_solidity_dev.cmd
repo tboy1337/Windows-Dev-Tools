@@ -10,7 +10,6 @@ net session >nul 2>&1
 if %errorlevel% equ 0 (
     echo This script is intended to be run as a user. Please run without administrator privileges.
     timeout /t 10 /nobreak
-    endlocal
     exit /b 1
 )
 
