@@ -1,4 +1,5 @@
 @echo off
+setlocal
 
 cd /d "%SystemDrive%" >nul 2>&1
 if %errorlevel% neq 0 (
@@ -8,6 +9,29 @@ if %errorlevel% neq 0 (
 net session >nul 2>&1
 if %errorlevel% equ 0 (
     echo This script is intended to be run as a user. Please run without administrator privileges.
+    timeout /t 10 /nobreak
+    exit /b 1
+)
+
+set PYTHON_CMD=
+py --version >nul 2>&1
+if %errorlevel% equ 0 (
+    set PYTHON_CMD=py
+) else (
+    python --version >nul 2>&1
+    if %errorlevel% equ 0 (
+        set PYTHON_CMD=python
+    ) else (
+        echo ERROR: Python is not installed or not in PATH.
+        echo Please install Python and ensure it's added to your PATH.
+        timeout /t 10 /nobreak
+        exit /b 1
+    )
+)
+
+%PYTHON_CMD% -m pip --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Pip is not installed or not in PATH.
     timeout /t 10 /nobreak
     exit /b 1
 )
@@ -52,20 +76,10 @@ echo Installing/Upgrading Solidity Compiler...
 call npm install -g solc
 
 echo Installing/Upgrading Slither...
-pip install --upgrade slither-analyzer 2>nul
-if %errorlevel% neq 0 (
-    echo Note: Slither requires Python. Skipping slither-analyzer installation.
-)
+%PYTHON_CMD% -m pip install --upgrade slither-analyzer
 
 echo Installing/Upgrading Mythril...
-pip install --upgrade mythril 2>nul
-if %errorlevel% neq 0 (
-    echo Note: Mythril requires Python. Skipping mythril installation.
-)
-
-echo Installing/Upgrading Foundry components...
-echo Note: Foundry (forge/cast/anvil) requires manual installation via foundryup.
-echo Visit https://book.getfoundry.sh/getting-started/installation for instructions.
+%PYTHON_CMD% -m pip install --upgrade mythril
 
 echo Installing/Upgrading OpenZeppelin CLI...
 call npm install -g @openzeppelin/cli
@@ -91,5 +105,6 @@ call npm cache clean --force
 echo.
 echo Installation complete!
 
-timeout /t 15 /nobreak
+timeout /t 10 /nobreak
+endlocal
 exit /b 0
