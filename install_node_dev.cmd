@@ -36,8 +36,8 @@ npm install -g prettier
 npm install -g jest
 npm install -g live-server
 
-echo Clearing npm cache...
-npm cache clean --force
+echo Verifying npm cache...
+npm cache verify
 
 timeout /t 10 /nobreak
 exit /b 0
