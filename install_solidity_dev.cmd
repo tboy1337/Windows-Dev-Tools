@@ -285,6 +285,17 @@ echo Foundry installation failed. Continuing with other tools...
 echo.
 
 :skip_foundry
+echo Updating pip...
+%PYTHON_CMD% -m pip install --upgrade pip
+echo.
+
+echo Updating setuptools...
+%PYTHON_CMD% -m pip install --upgrade setuptools
+echo.
+
+echo Updating wheel...
+%PYTHON_CMD% -m pip install --upgrade wheel
+echo.
 
 echo [2/6] Installing Aderyn...
 %PYTHON_CMD% -m pip install --upgrade aderyn
