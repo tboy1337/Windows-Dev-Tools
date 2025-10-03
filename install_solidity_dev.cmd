@@ -321,6 +321,10 @@ echo Cleaning npm cache...
 call npm cache clean --force
 echo.
 
+echo Purging pip cache...
+%PYTHON_CMD% -m pip cache purge
+echo.
+
 echo +========================+
 echo + Installation Complete! +
 echo +========================+
