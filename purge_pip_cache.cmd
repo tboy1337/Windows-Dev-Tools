@@ -31,6 +31,7 @@ if %errorlevel% neq 0 (
 )
 
 echo Purging pip cache...
+echo.
 %PYTHON_CMD% -m pip cache purge >nul 2>&1
 if %errorlevel% neq 0 (
     echo Failed to purge pip cache.  Error code: %errorlevel%
@@ -39,7 +40,6 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo.
 echo Pip cache purged successfully.
 echo.
 
