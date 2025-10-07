@@ -56,7 +56,20 @@ if %errorlevel% neq 0 (
     echo WARNING: Failed to update wheel.  Error code: %errorlevel%
 )
 
+set /a pass=0
+set /a max_passes=10
+set /a total_updated=0
+set /a total_failed=0
+
+:update_loop
+set /a pass+=1
+
 echo.
+echo ========================================
+echo       Update Pass !pass! of !max_passes!
+echo ========================================
+echo.
+
 echo Getting list of outdated packages...
 
 %PYTHON_CMD% -m pip list --outdated > "%TEMP_FILE%" 2>&1
@@ -69,8 +82,7 @@ if %errorlevel% neq 0 (
 
 if not exist "%TEMP_FILE%" (
     echo No outdated packages found.
-    timeout /t 10 /nobreak
-    exit /b 0
+    goto final_summary
 )
 
 set /a count=0
@@ -87,8 +99,7 @@ for /f "skip=2 tokens=1 delims= " %%i in ('type "%TEMP_FILE%"') do (
 if !count! equ 0 (
     echo All packages are already up to date.
     del "%TEMP_FILE%" >nul 2>&1
-    timeout /t 10 /nobreak
-    exit /b 0
+    goto final_summary
 )
 
 echo Found !count! outdated package(s).
@@ -107,9 +118,6 @@ for /f "skip=2 tokens=1 delims= " %%i in ('type "%TEMP_FILE%"') do (
 )
 
 echo.
-echo Proceeding with automatic updates...
-
-echo.
 echo Starting package updates...
 echo ==========================
 
@@ -126,9 +134,11 @@ for /f "skip=2 tokens=1 delims= " %%i in ('type "%TEMP_FILE%"') do (
                 if %errorlevel% neq 0 (
                     echo ERROR: Failed to update %%i.  Error code: %errorlevel%
                     set /a failed+=1
+                    set /a total_failed+=1
                 ) else (
                     echo SUCCESS: Updated %%i
                     set /a updated+=1
+                    set /a total_updated+=1
                 )
             )
         )
@@ -141,14 +151,35 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo ========================================
-echo           Update Summary
-echo ========================================
+echo Pass !pass! Summary:
+echo ------------------
 echo Successfully updated: !updated! packages.
 echo Failed to update: !failed! packages.
+
+if !pass! geq !max_passes! (
+    echo.
+    echo Maximum number of passes ^(!max_passes!^) reached.
+    echo Some packages may still be outdated due to complex dependencies.
+    goto final_summary
+)
+
+if !updated! gtr 0 (
+    echo.
+    echo Some packages were updated. Checking for more outdated packages...
+    goto update_loop
+)
+
+:final_summary
+echo.
+echo ========================================
+echo       Final Update Summary
+echo ========================================
+echo Total passes completed: !pass!
+echo Total packages updated: !total_updated!
+echo Total packages failed: !total_failed!
 echo.
 
-if !failed! neq 0 (
+if !total_failed! neq 0 (
     echo Some packages failed to update. This could be due to:
     echo - Permission issues ^(try running as administrator^)
     echo - Package conflicts or dependencies
