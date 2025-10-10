@@ -72,6 +72,10 @@ echo Starting Python Development Tools Installation and/or Upgrade...
 %PYTHON_CMD% -m pip install --upgrade pytest-redis
 %PYTHON_CMD% -m pip install --upgrade pytest-elasticsearch
 %PYTHON_CMD% -m pip install --upgrade pytest-twisted
+%PYTHON_CMD% -m pip install --upgrade hypothesis
+%PYTHON_CMD% -m pip install --upgrade mutmut
+%PYTHON_CMD% -m pip install --upgrade bandit
+%PYTHON_CMD% -m pip install --upgrade safety
 
 echo Purging pip cache...
 %PYTHON_CMD% -m pip cache purge
