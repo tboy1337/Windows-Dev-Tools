@@ -53,7 +53,6 @@ echo Starting Python Development Tools Installation and/or Upgrade...
 %PYTHON_CMD% -m pip install --upgrade pytest-cov
 %PYTHON_CMD% -m pip install --upgrade pytest-xdist
 %PYTHON_CMD% -m pip install --upgrade hypothesis
-%PYTHON_CMD% -m pip install --upgrade mutmut
 %PYTHON_CMD% -m pip install --upgrade bandit
 %PYTHON_CMD% -m pip install --upgrade safety
 
