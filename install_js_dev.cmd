@@ -13,31 +13,26 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-node --version >nul 2>&1
+bun --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Node.js is not installed or in PATH.
+    echo Bun is not installed or in PATH.
+    echo Install from: https://bun.com
     timeout /t 10 /nobreak
     exit /b 1
 )
 
-npm --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo npm is not installed or in PATH.
-    timeout /t 10 /nobreak
-    exit /b 1
-)
-
-echo Updating npm...
-npm install -g npm@latest
+echo Updating Bun...
+bun upgrade
 
 echo Installing and/or updating global development tools...
-npm install -g eslint
-npm install -g prettier
-npm install -g jest
-npm install -g live-server
-
-echo Verifying npm cache...
-npm cache verify
+bun add -g eslint
+bun add -g prettier
+bun add -g jest
+bun add -g live-server
+bun update -g --latest eslint
+bun update -g --latest prettier
+bun update -g --latest jest
+bun update -g --latest live-server
 
 timeout /t 10 /nobreak
 exit /b 0
