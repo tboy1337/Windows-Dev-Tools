@@ -8,9 +8,9 @@ if %errorlevel% neq 0 (
     echo Failed to change to %SystemDrive%.  Error code: %errorlevel%
 )
 
-echo ========================================
-echo    Updating All Pip Packages
-echo ========================================
+echo +===========================+
+echo + Updating All Pip Packages +
+echo +===========================+
 echo.
 
 set PYTHON_CMD=
@@ -65,9 +65,9 @@ set /a total_failed=0
 set /a pass+=1
 
 echo.
-echo ========================================
-echo       Update Pass !pass! of !max_passes!
-echo ========================================
+echo +====================================+
+echo + Update Pass !pass! of !max_passes! +
+echo +====================================+
 echo.
 
 echo Getting list of outdated packages...
@@ -106,7 +106,7 @@ echo Found !count! outdated package(s).
 echo.
 
 echo Outdated packages:
-echo ------------------
+echo ==================
 for /f "skip=2 tokens=1 delims= " %%i in ('type "%TEMP_FILE%"') do (
     if not "%%i"=="" (
         if not "%%i"=="Package" (
@@ -119,7 +119,7 @@ for /f "skip=2 tokens=1 delims= " %%i in ('type "%TEMP_FILE%"') do (
 
 echo.
 echo Starting package updates...
-echo ==========================
+echo ===========================
 
 set /a updated=0
 set /a failed=0
@@ -152,7 +152,7 @@ if %errorlevel% neq 0 (
 
 echo.
 echo Pass !pass! Summary:
-echo ------------------
+echo ====================
 echo Successfully updated: !updated! packages.
 echo Failed to update: !failed! packages.
 
@@ -171,9 +171,9 @@ if !updated! gtr 0 (
 
 :final_summary
 echo.
-echo ========================================
-echo       Final Update Summary
-echo ========================================
+echo +======================+
+echo + Final Update Summary +
+echo +======================+
 echo Total passes completed: !pass!
 echo Total packages updated: !total_updated!
 echo Total packages failed: !total_failed!
