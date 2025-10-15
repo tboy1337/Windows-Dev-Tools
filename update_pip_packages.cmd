@@ -66,7 +66,7 @@ set /a pass+=1
 
 echo.
 echo +====================================+
-echo + Update Pass !pass! of !max_passes! +
+echo +        Update Pass !pass! of !max_passes!         +
 echo +====================================+
 echo.
 
