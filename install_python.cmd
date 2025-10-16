@@ -39,9 +39,9 @@ exit /b 1
 
 :show_help
 echo.
-echo ============================================================================
-echo Python Installation Manager - Automated Installation Script
-echo ============================================================================
+echo +=============================================================+
+echo + Python Installation Manager - Automated Installation Script +
+echo +=============================================================+
 echo.
 echo USAGE:
 echo   %SCRIPT_NAME% [command] [arguments]
@@ -138,9 +138,9 @@ if !ERRORLEVEL! neq 0 (
 )
 
 echo.
-echo ============================================================================
-echo SUCCESS: Python Install Manager and latest Python are now installed!
-echo ============================================================================
+echo +======================================================================+
+echo + SUCCESS: Python Install Manager and latest Python are now installed! +
+echo +======================================================================+
 echo.
 echo You can now use 'py' or 'python' to run Python.
 echo Run 'py list' to see installed versions.
@@ -175,9 +175,9 @@ if !ERRORLEVEL! neq 0 (
 )
 
 echo.
-echo ============================================================================
-echo SUCCESS: Python %VERSION% has been installed!
-echo ============================================================================
+echo +===============================================+
+echo + SUCCESS: Python %VERSION% has been installed! +
+echo +===============================================+
 echo.
 echo Run 'py -V:%VERSION%' to use this version specifically.
 echo Run 'py list' to see all installed versions.
@@ -221,9 +221,9 @@ if !ERRORLEVEL! neq 0 (
 )
 
 echo.
-echo ============================================================================
-echo SUCCESS: All Python versions have been installed!
-echo ============================================================================
+echo +===================================================+
+echo + SUCCESS: All Python versions have been installed! +
+echo +===================================================+
 echo.
 echo Run 'py list' to see all installed versions.
 echo.
@@ -246,9 +246,9 @@ if "%VERSION%"=="" (
         exit /b 3
     )
     echo.
-    echo ============================================================================
-    echo SUCCESS: All Python versions have been updated!
-    echo ============================================================================
+    echo +=================================================+
+    echo + SUCCESS: All Python versions have been updated! +
+    echo +=================================================+
     echo.
 ) else (
     echo Updating Python %VERSION%...
@@ -260,9 +260,9 @@ if "%VERSION%"=="" (
         exit /b 3
     )
     echo.
-    echo ============================================================================
-    echo SUCCESS: Python %VERSION% has been updated!
-    echo ============================================================================
+    echo +=============================================+
+    echo + SUCCESS: Python %VERSION% has been updated! +
+    echo +=============================================+
     echo.
 )
 
@@ -318,9 +318,9 @@ if !ERRORLEVEL! neq 0 (
 )
 
 echo.
-echo ============================================================================
-echo SUCCESS: Python %VERSION% has been uninstalled!
-echo ============================================================================
+echo +=================================================+
+echo + SUCCESS: Python %VERSION% has been uninstalled! +
+echo +=================================================+
 echo.
 exit /b 0
 
@@ -340,9 +340,9 @@ if !ERRORLEVEL! neq 0 (
 )
 
 echo.
-echo ============================================================================
-echo SUCCESS: All shortcuts and aliases have been refreshed!
-echo ============================================================================
+echo +=========================================================+
+echo + SUCCESS: All shortcuts and aliases have been refreshed! +
+echo +=========================================================+
 echo.
 exit /b 0
 
@@ -362,9 +362,9 @@ if !ERRORLEVEL! neq 0 (
 )
 
 echo.
-echo ============================================================================
-echo SUCCESS: All Python installations have been removed!
-echo ============================================================================
+echo +======================================================+
+echo + SUCCESS: All Python installations have been removed! +
+echo +======================================================+
 echo.
 exit /b 0
 
@@ -397,9 +397,9 @@ if !ERRORLEVEL! neq 0 (
 )
 
 echo.
-echo ============================================================================
-echo SUCCESS: Python %VERSION% has been downloaded!
-echo ============================================================================
+echo +================================================+
+echo + SUCCESS: Python %VERSION% has been downloaded! +
+echo +================================================+
 echo.
 echo Offline package location: %DOWNLOAD_PATH%
 echo To install offline, use: py install -s %DOWNLOAD_PATH% %VERSION%
@@ -414,9 +414,9 @@ call :ensure_pymanager
 if !ERRORLEVEL! neq 0 exit /b !ERRORLEVEL!
 
 echo.
-echo ============================================================================
-echo SUCCESS: Python Install Manager is now installed!
-echo ============================================================================
+echo +===================================================+
+echo + SUCCESS: Python Install Manager is now installed! +
+echo +===================================================+
 echo.
 echo Run '%SCRIPT_NAME% install ^<version^>' to install Python.
 echo Run '%SCRIPT_NAME% help' for all available commands.
